@@ -3,12 +3,14 @@ import asyncio
 import regex
 import sys
 import time
+import aiohttp
 
 regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?'
 
 
 class parser:
-    def get_log_by_link(link: str) -> str:
+    @staticmethod
+    async def get_log_by_link(link: str, session: aiohttp.ClientSession) -> str:
         """ open gogle chrome client
         wait 10 sec for bypass anti-bot and loadding el
         return all log in string format
@@ -18,28 +20,40 @@ class parser:
                 raise Exception("[ERROR_VALID] : string is empty")
             if(not regex.match(regex_for_url, link)):
                 raise Exception("[ERROR_VALID] : Is not link")
-            res = requests.get(link)
-
-            if(res.status_code != 200):
-                raise Exception(f"[ERROR_OPEN_PAGE] : error {res.status_code}")
-
-            return res
-    
+            
+            async with session.get(link) as response:
+                if response.status != 200:
+                    raise Exception(f"[ERROR_OPEN_PAGE] : error {response.status}")
+                return await response.text()
     
         except Exception as ex:
-            return "ERR "
-    def get_log_by_links_array( links: list[str] ) ->str:
-        """ sending get request by urls
+            print(f"Error processing {link}: {str(ex)}")
+            return ""
+
+    @staticmethod
+    async def get_log_by_links_array(links: list[str]) -> list[str]:
+        """ sending get request by urls asynchronously
         """
         try:
-            if (type(links) is not list):
-                raise Exception(f"[ERROR_VALID] : problematic data format, waitting list[str]")
-            res = []
-            for link in links:
-                res.append(parser.get_log_by_link(link).text)
-            # return res
-            return "succses"
+            if not isinstance(links, list):
+                raise Exception("[ERROR_VALID] : problematic data format, waiting list[str]")
+            
+            async with aiohttp.ClientSession() as session:
+                tasks = []
+                for link in links:
+                    task = asyncio.create_task(parser.get_log_by_link(link, session))
+                    tasks.append(task)
+                    
+                results = await asyncio.gather(*tasks)
+                print(f"Processed {len(results)} links")
+                return results
+        
         except Exception as e:
-            print(f'error in { links }\n\n[ERROR]::{e}')
+            print(f'Error in processing links array:\n[ERROR]::{e}')
             return [""]
+
+    @staticmethod
+    def get_log_by_links_array_sync(links: list[str]) -> list[str]:
+        """Synchronous wrapper for the asynchronous function"""
+        return asyncio.run(parser.get_log_by_links_array(links))
 
