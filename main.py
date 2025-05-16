@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import asyncio
 from modules import parser
 
@@ -15,7 +14,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-=======
 import sys
 from cli import Params
 from api import get_packages, get_log
@@ -36,4 +34,3 @@ if __name__ == "__main__":
     main()
 
 
->>>>>>> cda1e35b0bebff48114376edd7993d45826fc00c
