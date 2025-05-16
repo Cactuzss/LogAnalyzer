@@ -1,0 +1,1 @@
+from modules.parse_logs.main import parser
