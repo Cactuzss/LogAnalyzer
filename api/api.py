@@ -21,3 +21,7 @@ def get_ftbfs(repo: str) -> list[Ftbfs]:
     res = requests.get(BASE_API + "/export/beehive/ftbfs?branch=" + repo)
     resobj = json.loads(res.content)
     return [Ftbfs(el) for el in resobj["ftbfs"]]
+
+def get_log(url: str) -> str:
+    res = requests.get(url)
+    return res.content.decode("utf-8")

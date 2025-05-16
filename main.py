@@ -1,6 +1,6 @@
 import sys
 from cli import Params
-from api import get_packages
+from api import get_packages, get_log
 
 def main():
     try:
@@ -12,8 +12,6 @@ def main():
         exit()
 
     response = get_packages(params.repo)
-    print(response[0].url)
-
 
 
 if __name__ == "__main__":
