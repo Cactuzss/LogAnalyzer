@@ -1,19 +1,26 @@
 import asyncio
-from modules import parser
-import sys
-from cli import Params
-from api import get_packages, get_log
-import fs
-from modules import CachingJSON
-
+from modules import parser, CachingJSON
+import json
 # for testing
 import time
 
 from test_links import TEST_LINKS
 
-test_obj ={
+test_obj1 ={
+        "name" : "test_name1",
+        "error_message": "test_error_message",
+        "error_explanation": "test_error_explanation2",
+        "error_solution": "test_error_solution" 
+    }
+test_obj2 ={
         "name" : "test_name2",
-        "error_message": "test_error_messag2e",
+        "error_message": "test_error_message",
+        "error_explanation": "test_error_explanation2",
+        "error_solution": "test_error_solution" 
+    }
+test_obj3 ={
+        "name" : "test_name3",
+        "error_message": "test_error_message",
         "error_explanation": "test_error_explanation2",
         "error_solution": "test_error_solution" 
     }
@@ -22,10 +29,13 @@ test_obj ={
 async def main():
     try:
         jc = CachingJSON()
-        jc.put_in_cash_obj(test_obj)
-        cashe_data = jc.get_obj_by_name(test_obj.get("name"))
+        jc.put_in_cash_obj(test_obj1)
+        jc.put_in_cash_obj(test_obj2)
+        jc.put_in_cash_obj(test_obj3)
 
-        print(cashe_data)
+        cashe_data = await jc.get_array_dists_by_msg("df")
+        
+        print(json.dumps(cashe_data, indent=4 ))
     except Exception as e:
         print(f"eternal err exit with \n\n{e}\n\nexeption")
         exit(1)

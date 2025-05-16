@@ -1,11 +1,15 @@
 from jsoncache import JSONCache
+import time
 
 
 class CachingJSON:
     def __init__(self, parameters = {}):
         self.jc = JSONCache()
+    def putting(self, *args):
 
-    def put_in_cash_obj(self, jsonobj: dict[str, str] = {}):
+        self.jc.put('main',args[0], args[1], args[2])
+
+    def put_in_cash_obj(self, jsonobj: dict[str, str]):
         """
         parametr values:
         name : "name",
@@ -15,10 +19,9 @@ class CachingJSON:
         """
 
         try:
-            self.jc.put(jsonobj.get("name"),"error_message", jsonobj.get("error_message") )
-            self.jc.put(jsonobj.get("name"),"error_explanation", jsonobj.get("error_explanation"))
-            self.jc.put(jsonobj.get("name"),"error_solution", jsonobj.get("error_solution"))
-
+            self.putting(jsonobj.get("name"),"error_message", jsonobj.get("error_message") )
+            self.putting(jsonobj.get("name"),"error_explanation", jsonobj.get("error_explanation"))
+            self.putting(jsonobj.get("name"),"error_solution", jsonobj.get("error_solution"))
 
         except Exception as e:
             print(f"error \n{e}")
@@ -29,3 +32,8 @@ class CachingJSON:
             
         except Exception as e:
             print(f"error {e}")
+
+    async def get_array_dists_by_msg(self, error_message:str):
+        data = self.jc.get("main")
+
+        return data
