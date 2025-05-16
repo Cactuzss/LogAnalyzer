@@ -4,24 +4,28 @@ import sys
 from cli import Params
 from api import get_packages, get_log
 import fs
+from modules import CachingJSON
 
 # for testing
 import time
 
-import test_links
+from test_links import TEST_LINKS
+
+test_obj ={
+        "name" : "test_name2",
+        "error_message": "test_error_messag2e",
+        "error_explanation": "test_error_explanation2",
+        "error_solution": "test_error_solution" 
+    }
 
 #define main function
 async def main():
     try:
-        
-        parsed_links = await parser.get_log_by_links_array(test_links)
-        print(len(parsed_links))
+        jc = CachingJSON()
+        jc.put_in_cash_obj(test_obj)
+        cashe_data = jc.get_obj_by_name(test_obj.get("name"))
 
-        i = 0
-        for link in parsed_links:
-            if(link != ""):
-                i+=1       
-        print(i)
+        print(cashe_data)
     except Exception as e:
         print(f"eternal err exit with \n\n{e}\n\nexeption")
         exit(1)

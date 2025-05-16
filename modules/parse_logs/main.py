@@ -11,9 +11,7 @@ regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]
 class parser:
     @staticmethod
     async def get_log_by_link(link: str, session: aiohttp.ClientSession) -> str:
-        """ open gogle chrome client
-        wait 10 sec for bypass anti-bot and loadding el
-        return all log in string format
+        """ 
         """
         try:
             if(len(link) <= 0):
