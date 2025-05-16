@@ -8,7 +8,9 @@ build==1.2.2.post1
 certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.2
+click==8.2.0
 colorama==0.4.6
+crashtest==0.4.1
 frozenlist==1.6.0
 fs==2.4.16
 h11==0.16.0
@@ -22,6 +24,7 @@ propcache==0.3.1
 pycparser==2.22
 pyproject_hooks==1.2.0
 PySocks==1.7.1
+RapidFuzz==3.13.0
 regex==2024.11.6
 requests==2.32.3
 sampleproject==4.0.0
