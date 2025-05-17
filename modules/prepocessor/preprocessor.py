@@ -43,7 +43,7 @@ class Preprocessor:
         }
 
     @staticmethod
-    def process_log(filepath: str, data: str):
+    def process_log(data: str):
         failures = []
         current_build_lines = []
         current_target = None
@@ -60,7 +60,6 @@ class Preprocessor:
                     if failure_detected_in_block:
                         failure_info = Preprocessor.extract_failure_info(
                             current_build_lines, current_target, current_stage)
-                        failure_info["log_file"] = os.path.basename(filepath)
                         failures.append(failure_info)
 
                 in_build_block = True
@@ -83,7 +82,6 @@ class Preprocessor:
         if in_build_block and failure_detected_in_block:
             failure_info = Preprocessor.extract_failure_info(
                 current_build_lines, current_target, current_stage)
-            failure_info["log_file"] = os.path.basename(filepath)
             failures.append(failure_info)
 
         return failures
