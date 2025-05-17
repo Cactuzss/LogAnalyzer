@@ -5,19 +5,19 @@ from modules import CachingJSON, LabelClassifier
 jc = CachingJSON()
 regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?'
 
-def collect_data(data:list[str], cluster_id:number, links:list[str], classifier:LabelClassifier):
+def collect_data(data:list[str], cluster_id:int, links:list[str], classifier:LabelClassifier):
     
     try:
         if not isinstance(classifier, LabelClassifier):
-            raise Exception(f"[ERROR] : non valid data, waitting LabelClassifier")
+            raise Exception(f"[ERROR] : non valid classifier, waitting LabelClassifier")
         if not isinstance(data, type(list[str])):
             raise Exception(f"[ERROR] : non valid data, waitting list[str]")
 
-        if not isinstance(cluster_id, str):            
-            raise Exception(f"[ERROR] : non valid data, waitting str")
+        if not isinstance(cluster_id, int):            
+            raise Exception(f"[ERROR] : non valid cluster_id, waitting int")
 
         if not isinstance(links, list[str]):            
-            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+            raise Exception(f"[ERROR] : non valid links, waitting list[str]")
 
 
         for link in data.get("list_links"):
