@@ -21,13 +21,13 @@ class Configuration:
         architecture: str = ""
 
     class EmbeddingSettings:
-        model_name: str = "all-minilm"
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
         api_type: APIEmbeddingType = APIEmbeddingType.OPENAI_COMPATABLE
         api_base_url: str = ""
         api_key: str = ""
 
     class LabelModelSettings:
-        model_name: str = "all-minilm"
+        model_name: str = 'sentence-transformers/all-MiniLM-L6-v2'
         api_type: APILabelClassifierType = APILabelClassifierType.OPENAI_COMPATABLE
         api_base_url: str = ""
         api_key: str = ""

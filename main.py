@@ -47,12 +47,22 @@ async def main():
     for k in clusters:
         clusters[k] = clusters[k][:3]
 
+    # Display clusters
+    print()
+    for k in clusters:
+        print(f"Cluster {k}")
+        for link in clusters[k]:
+            print(f"\t {link[1]}")
+        print()
+
     labelClassifier = LabelClassifier(
         Configuration.LabelModelSettings.model_name,
         Configuration.LabelModelSettings.api_type,
         Configuration.LabelModelSettings.api_base_url,
         Configuration.LabelModelSettings.api_key
     )
+
+
 
 
     # Get files by labels
