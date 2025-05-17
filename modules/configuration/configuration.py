@@ -9,7 +9,7 @@ class Configuration:
     output_path: str = "./log-analyzer.out"
 
     class AvailableArchitectures(Enum):
-        x86_64 = "x86_86"
+        x86_64 = "x86_64"
         i586 = "i586"
 
     class ModelTypes(Enum):
