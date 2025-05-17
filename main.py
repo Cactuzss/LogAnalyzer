@@ -68,7 +68,7 @@ def is_endpoint_valid(address: str) -> bool:
               help="Required if model type is remote. Sets ollama api endpoint")
 @click.option("--verbose", "-v", is_flag=True, 
               help="Set to true to more logs")
-@click.option("--output", "-o",
+@click.option("--output", "-o", type=click.Path(writable=True, dir_okay=False), 
               help="Output file")
 def startup(arch, branch, model_type, ollama_address, verbose, output):
     Configuration.architecture = arch
