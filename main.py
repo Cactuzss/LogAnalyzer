@@ -13,6 +13,7 @@ from modules.api import get_failed_builds
 from modules import Embedder, LabelClassifier
 from modules import Configuration, AvailableArchitectures, APILabelClassifierType, APIEmbeddingType 
 from modules.parse_logs import parser as Parser
+from modules import Preprocessor
 
 async def main():
 
