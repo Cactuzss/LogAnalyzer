@@ -1,5 +1,5 @@
 import regex, asyncio
-from modules import CachingJSON
+from modules import CachingJSON, LabelClassifier
 
 
 jc = CachingJSON()
@@ -16,20 +16,24 @@ def collect_data(data:list[str], claster_name:str, links:list[str], classifire:L
     }
     """
     try:
-        if not isinstance(classifire):
-            raise Exception("non valid data")
+        if not isinstance(classifire, LabelClassifier):
+            raise Exception(f"[ERROR] : non valid data, waitting LabelClassifier")
         if not isinstance(data, type(list[str])):
-            raise Exception("non valid data")
-        if not isinstance(claster_name, str):
-            raise Exception("non valid data")
-        if not isinstance(links, list[str]):
-            raise Exception("non valid data")
+            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+
+        if not isinstance(claster_name, str):            
+            raise Exception(f"[ERROR] : non valid data, waitting str")
+
+        if not isinstance(links, list[str]):            
+            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+
 
         for link in data.get("list_links"):
             if regex.match(regex_for_url, link):
-                raise Exception("non valid data")
-        if len(links) != len(data):
-            raise Exception("dont correct data")
+                raise Exception("[ERROR] : must be link")
+        if len(links) != len(data):            
+            raise Exception(f"[ERROR] : len(links) must be equal len(data)")
+
         
         # temp_obj = {
         #     "claster_name":claster_name,
