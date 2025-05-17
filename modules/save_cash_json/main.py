@@ -1,39 +1,63 @@
 from jsoncache import JSONCache
+
 import time
 
 
 class CachingJSON:
     def __init__(self, parameters = {}):
-        self.jc = JSONCache()
-    def putting(self, *args):
-
-        self.jc.put('main',args[0], args[1], args[2])
-
-    def put_in_cash_obj(self, jsonobj: dict[str, str]):
-        """
-        parametr values:
-        name : "name",
-        error_message: "error_message",
-        error_explanation: "error_explanation",
-        error_solution: "error_solution" 
-        """
-
+        self.jc = JSONCache(autosave=False)
+    async def put_array_dicts(self, dicts:list[dict])->None:
         try:
-            self.putting(jsonobj.get("name"),"error_message", jsonobj.get("error_message") )
-            self.putting(jsonobj.get("name"),"error_explanation", jsonobj.get("error_explanation"))
-            self.putting(jsonobj.get("name"),"error_solution", jsonobj.get("error_solution"))
-
+            if not isinstance(dicts, list[dict]):
+                raise Exception('[ERR_VALID] : don\'t correct format, input list[dist]')
+            for i in dicts:
+                self.putting(i)
         except Exception as e:
-            print(f"error \n{e}")
+            print(e)
 
-    def get_obj_by_name(self, name:str = ""):
+    async def putting(self, obj:dict):
         try:
-            return self.jc.get(name)
+            if not isinstance(obj, dict):
+                raise Exception('[ERR_VALID] : don\'t correct format, input dist')
+            try:
+                d = self.jc.get('main')
+                d.append(obj)
+                self.jc.put('main', d)
+            except:
+                self.jc.put('main',[obj] )
+        
+        except Exception as e:
+            print(e)
+
+    async def get_all_cashe_data(self):
+        try:
+            return self.jc.get('main')
             
+        except:
+            return []
+
+    async def get_array_dists_by_err_msg(self, error_message:str):
+        try:
+
+            data = self.jc.get('main')
+            result = []
+        
+            for d in data:
+                if d.get('err').get('error_message') == error_message:
+                    result.append(d.get('err'))
         except Exception as e:
-            print(f"error {e}")
+            print(f"[CACHE_ERROR] : {e}")
+        return result
+    
+    async def get_array_dists_by_claster_name(self, claster_name:str):
+        try:
 
-    async def get_array_dists_by_msg(self, error_message:str):
-        data = self.jc.get("main")
-
-        return data
+            data = self.jc.get('main')
+            result = []
+        
+            for d in data:
+                if d.get('err').get('claster_name') == claster_name:
+                    result.append(d.get('err'))
+        except Exception as e:
+            print(f"[CACHE_ERROR] : {e}")
+        return result

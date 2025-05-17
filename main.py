@@ -17,27 +17,12 @@ from test_links import TEST_LINKS
 
 async def main():
 
+    
+
     failed_builds = get_failed_builds(Configuration.branch, Configuration.architecture.value)
     print(len(failed_builds))
 
-    test_obj1 ={
-        "name" : "test_name1",
-        "error_message": "test_error_message",
-        "error_explanation": "test_error_explanation2",
-        "error_solution": "test_error_solution" 
-    }
-    test_obj2 ={
-        "name" : "test_name2",
-        "error_message": "test_error_message",
-        "error_explanation": "test_error_explanation2",
-        "error_solution": "test_error_solution" 
-    }
-    test_obj3 ={
-        "name" : "test_name3",
-        "error_message": "test_error_message",
-        "error_explanation": "test_error_explanation2",
-        "error_solution": "test_error_solution" 
-    }
+    
 
 
     try:
