@@ -2,7 +2,7 @@ import io
 from enum import Enum
 
 from modules.configuration.configuration import Configuration, APIEmbeddingType, APILabelClassifierType
-from sklearn.cluster import MeanShift as ClusterDetector
+from sklearn.cluster import AgglomerativeClustering as ClusterDetector
 from sklearn.decomposition import PCA
 
 import matplotlib.pyplot as plt
@@ -69,8 +69,7 @@ class Embedder:
 
     @staticmethod
     def generate_labels(embeddings: np.ndarray, embeddings_components: int = PCA_COMPONENTS) -> np.ndarray:
-        embeddings = PCA(n_components=embeddings_components).fit_transform(embeddings)
-        return ClusterDetector().fit(embeddings).labels_
+        return ClusterDetector(n_clusters=None, distance_threshold=2, compute_full_tree=True).fit(embeddings).labels_
 
     @staticmethod
     def generate_plot(embeddings: np.ndarray, labels: np.ndarray | None = None, alpha: float = 0.7) -> Image.Image:

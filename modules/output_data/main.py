@@ -1,5 +1,6 @@
 import regex, asyncio
 from modules import CachingJSON
+from modules import LabelClassifier
 
 
 jc = CachingJSON()
@@ -16,7 +17,7 @@ def collect_data(data:list[str], claster_name:str, links:list[str], classifire:L
     }
     """
     try:
-        if not isinstance(classifire):
+        if not isinstance(classifire, LabelClassifier):
             raise Exception("non valid data")
         if not isinstance(data, type(list[str])):
             raise Exception("non valid data")

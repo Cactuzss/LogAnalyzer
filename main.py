@@ -13,14 +13,14 @@ from modules.api import get_failed_builds
 from modules import Embedder, LabelClassifier
 from modules import Configuration, AvailableArchitectures, APILabelClassifierType, APIEmbeddingType 
 from modules import parser as Parser
-from modules import Preprocessor
+from modules import collect_data
 
 def generate_cluster(labels, texts, links):
-    res: dict[int, list[str]] = {}
+    res: dict[int, list[dict]] = {}
     for i, label in enumerate(labels):
         if label not in res:
             res[label] = []
-        res[label].append((texts[i], links[i]))
+        res[label].append({ "log_text": texts[i], "link": links[i]  })
     return res
 
 async def main():
@@ -31,7 +31,7 @@ async def main():
     failed_builds = [el.url for el in failed_builds]
 
     files = await Parser.get_log_by_links_array(failed_builds)
-    print(f"Got {len(files)} logs")
+    #print(f"Got {len(files)} logs")
 
     embedder = Embedder(
         Configuration.EmbeddingSettings.model_name,
@@ -52,7 +52,7 @@ async def main():
     for k in clusters:
         print(f"Cluster {k}")
         for link in clusters[k]:
-            print(f"\t {link[1]}")
+            print(f"\t {link["link"]}")
         print()
 
     labelClassifier = LabelClassifier(
@@ -62,12 +62,18 @@ async def main():
         Configuration.LabelModelSettings.api_key
     )
 
+    if Configuration.GeneralSettings.verbose:
+        for k in clusters:
+            el = collect_data(
+                claster_name=str(k),
+                data=[el["log_text"] for el in clusters[k]],
+                links=[el["log_text"] for el in clusters[k]],
+                classifire=labelClassifier
+            )
 
+            print(el)
 
-
-    # Get files by labels
-       
-
+            exit()
 
     return 
 
@@ -132,13 +138,12 @@ def startup(arch, branch, verbose, output, embedding_model_name, embedding_model
         assert len(Configuration.LabelModelSettings.api_key) > 0, "[ERROR]: You must specify label model api key if you are using OPENAI_COMPATABLE api type"
 
     
-    time_start = time.time()
+    #time_start = time.time()
     
     asyncio.run(main())
     
-    time_end = time.time()
-    
-    print((time_end - time_start ))
+    #time_end = time.time()
+    #print((time_end - time_start ))
 
 
 
