@@ -136,7 +136,9 @@ class LabelClassifier:
 
             case APILabelClassifierType.TRANSFORMERS:
                 try:
+                    from transformers import utils
                     from transformers import pipeline
+                    utils.logging.set_verbosity_error()
                 except:
                     raise ImportError("Failed to import transformers! Install transformers to inference localy")
                 
@@ -171,5 +173,3 @@ class LabelClassifier:
 
             case _:
                 raise ValueError("Unknown API")
-            
-        return result
