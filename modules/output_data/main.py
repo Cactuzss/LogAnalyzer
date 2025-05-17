@@ -19,7 +19,7 @@ def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
 
 
         for link in data:
-            if regex.match(regex_for_url, link.get("link")):
+            if regex.match(regex_for_url, link.get("url")):
                 raise Exception("[ERROR] : must be link")
 
         
@@ -37,7 +37,7 @@ def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
         # asyncio.run(jc.putting('temp', "claster", temp_obj))
 
         # request to lrm
-        generate_data = classifier.generate_log_description(data, cluster_id)
+        generate_data = classifier.generate_log_description(data.get("data"), cluster_id)
         """
         {
         
@@ -56,7 +56,7 @@ def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
 
         for i in range(0, len(data)):
             result_data.get("data").append({
-                "link":data[i].get("link"),
+                "link":data[i].get("url"),
                 "log_text":data[i].get("data")
             })
         """
