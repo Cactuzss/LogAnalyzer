@@ -12,7 +12,7 @@ from modules import CachingJSON
 from modules.api import get_failed_builds
 from modules import Embedder, LabelClassifier
 from modules import Configuration, AvailableArchitectures, APILabelClassifierType, APIEmbeddingType 
-from modules.parse_logs import parser as Parser
+from modules import parser as Parser
 
 async def main():
 
