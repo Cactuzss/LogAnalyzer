@@ -57,7 +57,7 @@ class parser:
         
         except Exception as e:
             print(f'Error in processing links array:\n[ERROR]::{e}')
-            return [""]
+            return None
 
     @staticmethod
     def get_log_by_links_array_sync(links: list[str]) -> list[str]:
