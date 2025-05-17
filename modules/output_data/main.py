@@ -1,39 +1,34 @@
 import regex, asyncio
-from modules import CachingJSON
-from modules import LabelClassifier
+from modules import CachingJSON, LabelClassifier
 
 
 jc = CachingJSON()
 regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?'
 
-def collect_data(data:list[str], claster_name:str, links:list[str], classifire:LabelClassifier):
-    """
-    dictionary format:
-    {
-        "claster_name":[{
-            "link":"text_log"
-        }...]
-
-    }
-    """
+def collect_data(data:list[str], cluster_id:number, links:list[str], classifier:LabelClassifier):
+    
     try:
-        if not isinstance(classifire, LabelClassifier):
-            raise Exception("non valid data")
+        if not isinstance(classifier, LabelClassifier):
+            raise Exception(f"[ERROR] : non valid data, waitting LabelClassifier")
         if not isinstance(data, type(list[str])):
-            raise Exception("non valid data")
-        if not isinstance(claster_name, str):
-            raise Exception("non valid data")
-        if not isinstance(links, list[str]):
-            raise Exception("non valid data")
+            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+
+        if not isinstance(cluster_id, str):            
+            raise Exception(f"[ERROR] : non valid data, waitting str")
+
+        if not isinstance(links, list[str]):            
+            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+
 
         for link in data.get("list_links"):
             if regex.match(regex_for_url, link):
-                raise Exception("non valid data")
-        if len(links) != len(data):
-            raise Exception("dont correct data")
+                raise Exception("[ERROR] : must be link")
+        if len(links) != len(data):            
+            raise Exception(f"[ERROR] : len(links) must be equal len(data)")
+
         
         # temp_obj = {
-        #     "claster_name":claster_name,
+        #     "cluster_id":cluster_id,
         #     "data":[
 
         #     ]
@@ -46,10 +41,11 @@ def collect_data(data:list[str], claster_name:str, links:list[str], classifire:L
         # asyncio.run(jc.putting('temp', "claster", temp_obj))
 
         # request to lrm
-        generate_data = classifire.generate_log_description(data, claster_name)
+        generate_data = classifier.generate_log_description(data, cluster_id)
         """
         {
-        err_msg:,
+        
+        "cluster_name":err_type,
         err_exp:,
         err_sol:
         }
@@ -57,7 +53,7 @@ def collect_data(data:list[str], claster_name:str, links:list[str], classifire:L
 
 
         result_data = {
-            "claster_name":claster_name,
+            "cluster_id":cluster_id,
             "generate_data":generate_data,
             "data":[]
         }
@@ -69,9 +65,9 @@ def collect_data(data:list[str], claster_name:str, links:list[str], classifire:L
             })
         """
         {
-            "claster_name":claster_name,
+            "cluster_id":cluster_id
             "generatedata":{
-                "msg":msg,
+                "cluster_name":type,
                 "exp":exp,
                 "solve":solve
             }
