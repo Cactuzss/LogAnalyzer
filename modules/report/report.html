@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Error Clusters Report</title>
+    <!-- Bootstrap CSS (Dark Theme) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-dark-full.min.css">
+
+    <style>
+        /* General Body and Container Styles */
+        body {
+            background-color: #121212; /* Deep dark background */
+            color: #e0e0e0; /* Light grey text for body */
+            padding: 40px 20px; /* More padding */
+            font-family: sans-serif; /* Use a common sans-serif font */
+        }
+        .container {
+            background-color: #1e1e1e; /* Slightly lighter than body */
+            padding: 30px;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+        }
+
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff; /* Pure white headings */
+            margin-bottom: 15px;
+        }
+        h1 {
+             margin-bottom: 25px;
+             border-bottom: 1px solid #333; /* Separator line */
+             padding-bottom: 15px;
+        }
+
+        /* Info Summary */
+        .summary-info {
+            margin-bottom: 30px;
+            color: #bbbbbb; /* Slightly darker grey for info */
+        }
+        .summary-info p {
+            margin-bottom: 5px;
+        }
+
+        /* Card (Cluster) Styles */
+        .card {
+            background-color: #2a2a2a; /* Card background */
+            border: none; /* Remove default border */
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden; /* Ensure rounded corners clip content */
+        }
+        .card-header {
+            background-color: #333333; /* Darker header */
+            border-bottom: 1px solid #444444; /* Subtle border */
+            color: #ffffff;
+            padding: 15px 20px; /* More padding */
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Push summary to the right */
+            align-items: center; /* Vertically align items */
+            transition: background-color 0.2s ease-in-out; /* Smooth hover transition */
+        }
+         .card-header:hover {
+            background-color: #444444; /* Lighter on hover */
+         }
+         .card-header[aria-expanded="true"] {
+             background-color: #4a4a4a; /* Even darker when open */
+         }
+
+        /* Cluster Summary in Header */
+        .cluster-summary {
+            font-size: 0.8em;
+            font-weight: normal;
+            color: #999999; /* Muted color */
+            margin-left: 20px; /* Space between title and summary */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .cluster-summary em {
+            font-style: normal;
+            color: #f0c674; /* Yellowish accent for count */
+            font-weight: bold;
+        }
+
+        /* Card Body */
+        .card-body {
+            padding: 20px; /* Consistent padding */
+            color: #cccccc; /* Slightly lighter text than header */
+        }
+
+        /* Log Entry Styles */
+        .log-entry {
+            margin-bottom: 20px; /* Space between entries */
+            padding: 15px;
+            background-color: #222222; /* Dark background for entry */
+            border-left: 3px solid #505050; /* Left border as a separator */
+            border-radius: 4px;
+        }
+         .log-entry:last-child {
+             margin-bottom: 0; /* No bottom margin for the last entry */
+         }
+
+        /* Specific Info within Log Entry */
+        .log-info-line {
+            font-weight: normal; /* Not bold */
+            color: #a0a0a0; /* Muted info color */
+            font-size: 0.9em;
+            margin-bottom: 5px; /* Space between info lines */
+        }
+         .log-info-line strong { /* Make labels like "Log File:" bold */
+             color: #bbbbbb;
+             font-weight: bold;
+         }
+        .log-path {
+            font-family: 'Courier New', Courier, monospace; /* Monospace for paths/identifiers */
+            color: #81a2be; /* Blueish color */
+            word-break: break-all;
+        }
+
+        /* Error Snippet Styling */
+        .error-snippet-label {
+             font-weight: bold;
+             color: #bbbbbb;
+             margin-top: 10px; /* Space above label */
+             display: block; /* Make it a block element */
+             margin-bottom: 5px; /* Space below label */
+        }
+        .error-snippet {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: #3a2222; /* Dark reddish background for error */
+            border: 1px solid #6a3333; /* Matching border */
+            padding: 10px;
+            border-radius: 4px;
+            color: #ff9999; /* Lighter reddish color for error text */
+            font-size: 0.9em;
+            max-height: 200px; /* Limit height, can scroll */
+            overflow-y: auto;
+        }
+
+        /* Full Log Toggle Link */
+         .full-log-toggle {
+            color: #b5bd68; /* Greenish color */
+            cursor: pointer;
+            text-decoration: none; /* Remove underline initially */
+            margin-top: 10px;
+            display: inline-block;
+            font-size: 0.9em;
+            transition: color 0.2s ease-in-out;
+        }
+        .full-log-toggle:hover {
+            color: #c0c070; /* Lighter green on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+
+
+        /* Full Log Content Styling */
+        .full-log-content {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background-color: #1c1c1c;
+            border: 1px solid #404040;
+            padding: 10px;
+            margin-top: 10px;
+            display: none;
+            max-height: 400px;
+            overflow: auto; /* Use auto to show scrollbars only when needed */
+            color: #aaaaaa;
+            font-size: 0.85em;
+            border-radius: 4px;
+        }
+
+        /* Custom Scrollbar Styles (for Webkit browsers like Chrome, Safari) */
+        .error-snippet::-webkit-scrollbar,
+        .full-log-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .error-snippet::-webkit-scrollbar-track,
+        .full-log-content::-webkit-scrollbar-track {
+            background: #333; /* Dark track */
+            border-radius: 4px;
+        }
+
+        .error-snippet::-webkit-scrollbar-thumb,
+        .full-log-content::-webkit-scrollbar-thumb {
+            background: #555; /* Darker thumb */
+            border-radius: 4px;
+        }
+
+        .error-snippet::-webkit-scrollbar-thumb:hover,
+        .full-log-content::-webkit-scrollbar-thumb:hover {
+            background: #666; /* Even darker thumb on hover */
+        }
+
+        /* Custom Scrollbar Styles (for Firefox) */
+        .error-snippet,
+        .full-log-content {
+            scrollbar-width: thin; /* "auto" or "thin" */
+            scrollbar-color: #555 #333; /* thumb track */
+        }
+
+        /* Accordion container */
+        #accordionClusters .card-header:not(.collapsed) {
+             /* Style for headers when the body is shown */
+             border-bottom-color: transparent; /* Hide bottom border when open */
+        }
+        #accordionClusters .collapse:not(.show) {
+             /* Hide collapse when not expanded */
+             visibility: hidden; /* Also hide visually */
+             height: 0 !important; /* Ensure it takes no space */
+        }
+
+
+    </style>
+</head>
+<body>
+
+<body>
+    <div class="container" id="accordionClusters">
+        <h1>Build Error Clusters Report</h1>
+
+        <div class="summary-info">
+            <p>Total Failures: {{ total_failures }}</p>
+            <p>Total Clusters: {{ total_clusters }}</p>
+        </div>
+
+        {% if clusters %}
+            {% for cluster in clusters %}
+                <div class="card">
+                    <!-- Заголовок аккордеона с cluster_id и cluster_name -->
+                    <div class="card-header collapsed" id="headingCluster{{ loop.index }}" data-bs-toggle="collapse" data-bs-target="#collapseCluster{{ loop.index }}" aria-expanded="false" aria-controls="collapseCluster{{ loop.index }}">
+                        <h2 class="mb-0">
+                            Cluster {{ cluster.cluster_id }}: {{ cluster.generatedata.cluster_name }}
+                        </h2>
+                    </div>
+
+                    <!-- Содержимое аккордеона -->
+                    <div id="collapseCluster{{ loop.index }}" class="collapse" aria-labelledby="headingCluster{{ loop.index }}" data-bs-parent="#accordionClusters">
+                        <div class="card-body">
+                            <div class="cluster-data">
+                                <p><strong>Explanation:</strong> {{ cluster.generatedata.exp }}</p>
+                                <p><strong>Solution:</strong> {{ cluster.generatedata.solve }}</p>
+                            </div>
+                            <div class="links-list">
+                                <h4>Links:</h4>
+                                {% if cluster.data %}
+                                    <ul>
+                                        {% for item in cluster.data %}
+                                            <li class="link-item">
+                                                <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No links available for this cluster.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No build failure clusters found or processed.</p>
+        {% endif %}
+    </div>
+
+<!-- Bootstrap Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Toggle full log visibility
+        $('.full-log-toggle').on('click', function() {
+            var targetId = $(this).data('target');
+            $(targetId).slideToggle('fast'); // Use slideToggle for smoother animation
+            var currentText = $(this).text();
+            if (currentText === 'Show Full Log') {
+                $(this).text('Hide Full Log');
+            } else {
+                $(this).text('Show Full Log');
+            }
+        });
+
+         // Bootstrap's data-bs-toggle="collapse" on card-header handles the accordion effect
+         // No extra JS needed for collapsing cards themselves with Bootstrap 5
+    });
+</script>
+
+</body>
+</html>
