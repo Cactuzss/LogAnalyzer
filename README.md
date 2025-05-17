@@ -109,3 +109,4 @@ Cluster 1
 - Recommended to use Python virtual environment
 - Processing time depends on model type and hardware
 - Ensure network access to download models/logs
+- Recommended embedding model is [𓎛𓅓𓏏 𓈖 𓂋𓁛 𓈖𓈖 𓎼𓈙](https://huggingface.co/VirtualAddressExtension/hahaton-minilm-curse-of-ra)
