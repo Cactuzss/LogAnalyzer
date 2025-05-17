@@ -52,6 +52,9 @@ class parser:
 
     @staticmethod
     def get_log_by_links_array_sync(links: list[str]) -> list[str]:
+        
+        if not isinstance(links, list):
+            raise Exception("[ERROR_VALID] : problematic data format, waiting list[str]")
         """Synchronous wrapper for the asynchronous function"""
         return asyncio.run(parser.get_log_by_links_array(links))
 
