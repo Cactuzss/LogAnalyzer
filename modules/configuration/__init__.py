@@ -1,1 +1,3 @@
 from modules.configuration.configuration import Configuration
+from modules.configuration.configuration import AvailableArchitectures, APILabelClassifierType, APIEmbeddingType
+

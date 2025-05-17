@@ -1,6 +1,7 @@
 import io
 from enum import Enum
 
+from modules.configuration.configuration import Configuration, APIEmbeddingType, APILabelClassifierType
 from sklearn.cluster import MeanShift as ClusterDetector
 from sklearn.decomposition import PCA
 
@@ -14,17 +15,11 @@ from PIL import Image
 
 PCA_COMPONENTS = 50
 
-
-class APIEmbeddingType(Enum):
-    OPENAI_COMPATABLE = 'openai',
-    SENTENCE_TRANSFORMERS = 'sentence_transformers',
-
-
 class Embedder:
     def __init__(
             self, 
-            model_name: str = 'all-minilm', 
-            api_type: APIEmbeddingType = APIEmbeddingType.OPENAI_COMPATABLE, 
+            model_name: str = Configuration.EmbeddingSettings.model_name,
+            api_type: APIEmbeddingType = Configuration.EmbeddingSettings.api_type,
             api_base_url: str | None = None,
             api_key: str | None = None,
         ):
@@ -55,7 +50,7 @@ class Embedder:
             case _:
                 raise ValueError("Unknown API")
 
-    def create_embedding(self, texts: str | list[str], show_progress_bar: bool = True) -> np.ndarray:
+    def create_embedding(self, texts: str | list[str], show_progress_bar: bool = Configuration.GeneralSettings.verbose) -> np.ndarray:
         match self.api_type:
             case APIEmbeddingType.OPENAI_COMPATABLE:
                 data = self.api_client.embeddings.create(input=texts, model=self.model_name).data
@@ -113,10 +108,6 @@ class Embedder:
         return Image.open(filedata)
 
 
-class APILabelClassifierType(Enum):
-    OPENAI_COMPATABLE = 'openai',
-    TRANSFORMERS = 'transformers',
-
 
 class Response(BaseModel):
     text: str
@@ -125,7 +116,7 @@ class Response(BaseModel):
 class LabelClassifier:
     def __init__(
             self, 
-            model_name: str = 'all-minilm', 
+            model_name: str = Configuration.LabelModelSettings.model_name,
             api_type: APILabelClassifierType = APILabelClassifierType.OPENAI_COMPATABLE, 
             api_base_url: str | None = None,
             api_key: str | None = None,
