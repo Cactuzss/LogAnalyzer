@@ -15,12 +15,12 @@ from modules import Configuration, AvailableArchitectures, APILabelClassifierTyp
 from modules import parser as Parser
 from modules import collect_data
 
-def generate_cluster(labels, texts, links):
+def generate_cluster(labels, texts):
     res: dict[int, list[dict]] = {}
     for i, label in enumerate(labels):
         if label not in res:
             res[label] = []
-        res[label].append({ "log_text": texts[i], "link": links[i]  })
+        res[label].append(texts[i])
     return res
 
 async def main():
@@ -43,7 +43,7 @@ async def main():
     embeddings = embedder.create_embedding(failed_builds)
     labels = embedder.generate_labels(embeddings)
     
-    clusters = generate_cluster(labels, files, failed_builds)
+    clusters = generate_cluster(labels, files)
     for k in clusters:
         clusters[k] = clusters[k][:3]
 
@@ -52,7 +52,7 @@ async def main():
     for k in clusters:
         print(f"Cluster {k}")
         for link in clusters[k]:
-            print(f"\t {link["link"]}")
+            print(f"\t {link["url"]}")
         print()
 
     labelClassifier = LabelClassifier(
@@ -65,11 +65,10 @@ async def main():
     if Configuration.GeneralSettings.verbose:
         for k in clusters:
             el = collect_data(
-                claster_name=str(k),
-                data=[el["log_text"] for el in clusters[k]],
-                links=[el["log_text"] for el in clusters[k]],
-                classifire=labelClassifier
-            )
+                cluster_id=k,
+                data=files,
+                classifier=labelClassifier
+            )           
 
             print(el)
 
