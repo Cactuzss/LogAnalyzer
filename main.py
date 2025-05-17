@@ -17,26 +17,9 @@ from test_links import TEST_LINKS
 
 async def main():
 
-    
-
     failed_builds = get_failed_builds(Configuration.branch, Configuration.architecture.value)
     print(len(failed_builds))
 
-    
-
-
-    try:
-        jc = CachingJSON()
-        jc.put_in_cash_obj(test_obj1)
-        jc.put_in_cash_obj(test_obj2)
-        jc.put_in_cash_obj(test_obj3)
-
-        cashe_data = await jc.get_array_dists_by_msg("df")
-        
-        print(json.dumps(cashe_data, indent=4 ))
-    except Exception as e:
-        print(f"eternal err exit with \n\n{e}\n\nexeption")
-        exit(1)
 
 
 # Startup and configuration stuff

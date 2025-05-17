@@ -1,7 +1,5 @@
 from jsoncache import JSONCache
 
-import time
-
 
 class CachingJSON:
     def __init__(self, parameters = {}):
@@ -13,7 +11,7 @@ class CachingJSON:
             for i in dicts:
                 self.putting(i)
         except Exception as e:
-            print(e)
+            print(f"[CACHE_ERROR] : {e}")
 
     async def putting(self, obj:dict):
         try:
@@ -27,7 +25,7 @@ class CachingJSON:
                 self.jc.put('main',[obj] )
         
         except Exception as e:
-            print(e)
+            print(f"[CACHE_ERROR] : {e}")
 
     async def get_all_cashe_data(self):
         try:
@@ -38,7 +36,8 @@ class CachingJSON:
 
     async def get_array_dists_by_err_msg(self, error_message:str):
         try:
-
+            if not isinstance(error_message, str):
+                raise Exception('[ERR_VALID] : don\'t correct format, input str')
             data = self.jc.get('main')
             result = []
         
@@ -51,7 +50,8 @@ class CachingJSON:
     
     async def get_array_dists_by_claster_name(self, claster_name:str):
         try:
-
+            if not isinstance(claster_name, str):
+                raise Exception('[ERR_VALID] : don\'t correct format, input str')
             data = self.jc.get('main')
             result = []
         
