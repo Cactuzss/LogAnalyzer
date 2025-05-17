@@ -4,6 +4,7 @@ import regex
 import sys
 import time
 import aiohttp
+import re
 
 regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?'
 
@@ -22,14 +23,22 @@ class parser:
             async with session.get(link) as response:
                 if response.status != 200:
                     raise Exception(f"[ERROR_OPEN_PAGE] : error {response.status}")
-                return await response.text()
+                
+                result = {
+                    "url": link,
+                    "data": (await response.text()).replace("'", '').replace('"', ''),
+                    "date" : response.headers.get("date")
+                }
+
+
+                return result
     
         except Exception as ex:
             print(f"Error processing {link}: {str(ex)}")
             return ""
 
     @staticmethod
-    async def get_log_by_links_array(links: list[str]) -> list[str]:
+    async def get_log_by_links_array(links: list[str]) -> list[dict[str,str,str]]:
         """ sending get request by urls asynchronously
         """
         try:

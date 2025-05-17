@@ -4,60 +4,56 @@ from jsoncache import JSONCache
 class CachingJSON:
     def __init__(self, parameters = {}):
         self.jc = JSONCache(autosave=False)
-    async def put_array_dicts(self, dicts:list[dict])->None:
+    async def put_array(self, branch: str,key:str , values:list[dict])->None:
         try:
-            if not isinstance(dicts, list[dict]):
-                raise Exception('[ERR_VALID] : don\'t correct format, input list[dist]')
-            for i in dicts:
-                self.putting(i)
+            if not isinstance(branch, str) and not isinstance(key, str):
+                raise Exception(f'[ERR_VALID] : can\' read property "branch, key" with type {type(branch)}/{type(key)}, please enter str')
+            for i in values:
+                await self.putting(branch,key, i)
         except Exception as e:
             print(f"[CACHE_ERROR] : {e}")
 
-    async def putting(self, obj:dict):
+    async def putting(self,branch,key, obj:any):
         try:
-            if not isinstance(obj, dict):
-                raise Exception('[ERR_VALID] : don\'t correct format, input dist')
+            inpt_data = {
+                key:obj
+            }
+
+            # validation 
             try:
-                d = self.jc.get('main')
-                d.append(obj)
-                self.jc.put('main', d)
+                d = self.jc.get(branch)
+                d.append(inpt_data)
+                self.jc.put(branch, d)
             except:
-                self.jc.put('main',[obj] )
+                self.jc.put(branch,[inpt_data] )
         
         except Exception as e:
             print(f"[CACHE_ERROR] : {e}")
 
-    async def get_all_cashe_data(self):
+    async def get_all_cashe_data(self, branch):
         try:
-            return self.jc.get('main')
-            
-        except:
-            return []
+            if not isinstance(branch, str):
+                raise Exception(f'[ERR_VALID] : can\' read property "branch" with type {type(branch)}, please enter str')
+            try:
+                return self.jc.get(branch)
 
-    async def get_array_dists_by_err_msg(self, error_message:str):
+            except:
+                return []
+        except Exception as e:
+            print(f"[CACHE_ERROR] : {e}")
+
+    async def get_array_data(self,branch:str, key:str, property:str,  value:str=""):
         try:
-            if not isinstance(error_message, str):
-                raise Exception('[ERR_VALID] : don\'t correct format, input str')
-            data = self.jc.get('main')
+            if not isinstance(branch, str) and not isinstance(key, str) and not isinstance(value, str) and not isinstance(property, str):
+                raise Exception(f'[ERR_VALID] : can\' read property "branch, key, property, value" with type, please enter str')
+            data = self.jc.get(branch)
             result = []
         
             for d in data:
-                if d.get('err').get('error_message') == error_message:
-                    result.append(d.get('err'))
+                if d.get(key).get(property) == value or value == "":
+                    result.append(d.get(key, property))
         except Exception as e:
             print(f"[CACHE_ERROR] : {e}")
         return result
     
-    async def get_array_dists_by_claster_name(self, claster_name:str):
-        try:
-            if not isinstance(claster_name, str):
-                raise Exception('[ERR_VALID] : don\'t correct format, input str')
-            data = self.jc.get('main')
-            result = []
-        
-            for d in data:
-                if d.get('err').get('claster_name') == claster_name:
-                    result.append(d.get('err'))
-        except Exception as e:
-            print(f"[CACHE_ERROR] : {e}")
-        return result
+    
