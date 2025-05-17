@@ -20,6 +20,11 @@ def generate_cluster(labels, texts):
     for i, label in enumerate(labels):
         if label not in res:
             res[label] = []
+
+        if (texts[i] is None):
+            # TODO: LOL XD WHAT
+            continue
+
         res[label].append(texts[i])
     return res
 
@@ -65,13 +70,12 @@ async def main():
     if Configuration.GeneralSettings.verbose:
         for k in clusters:
             el = collect_data(
-                cluster_id=k,
-                data=files,
+                cluster_id=int(k),
+                data=clusters[k],
                 classifier=labelClassifier
             )           
 
             print(el)
-
             exit()
 
     return 

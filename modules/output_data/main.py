@@ -8,19 +8,19 @@ regex_for_url = r'(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]
 def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
     
     try:
-        if not isinstance(classifier, LabelClassifier):
-            raise Exception(f"[ERROR] : non valid classifier, waitting LabelClassifier")
-        if not isinstance(data, type(list[dict])):
-            raise Exception(f"[ERROR] : non valid data, waitting list[str]")
+        #if not isinstance(classifier, LabelClassifier):
+            #raise Exception(f"[ERROR] : non valid classifier, waitting LabelClassifier")
+        #if not isinstance(data, type(list[dict])):
+            #raise Exception(f"[ERROR] : non valid data, waitting list[dict] ({type(data)})")
 
-        if not isinstance(cluster_id, int):            
-            raise Exception(f"[ERROR] : non valid cluster_id, waitting int")
+        #if not isinstance(cluster_id, int):            
+            #raise Exception(f"[ERROR] : non valid cluster_id, waitting int ({type(cluster_id)})")
 
 
 
-        for link in data:
-            if regex.match(regex_for_url, link.get("link")):
-                raise Exception("[ERROR] : must be link")
+        #for link in data:
+            #if regex.match(regex_for_url, link.get("url")):
+                #raise Exception("[ERROR] : must be url")
 
         
         # temp_obj = {
@@ -56,7 +56,7 @@ def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
 
         for i in range(0, len(data)):
             result_data.get("data").append({
-                "link":data[i].get("link"),
+                "link":data[i].get("url"),
                 "log_text":data[i].get("data")
             })
         """

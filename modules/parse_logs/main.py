@@ -35,7 +35,7 @@ class parser:
     
         except Exception as ex:
             print(f"Error processing {link}: {str(ex)}")
-            return ""
+            return None
 
     @staticmethod
     async def get_log_by_links_array(links: list[str]) -> list[dict[str,str,str]]:
@@ -57,7 +57,7 @@ class parser:
         
         except Exception as e:
             print(f'Error in processing links array:\n[ERROR]::{e}')
-            return [""]
+            return None
 
     @staticmethod
     def get_log_by_links_array_sync(links: list[str]) -> list[str]:

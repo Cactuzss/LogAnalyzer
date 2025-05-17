@@ -27,7 +27,7 @@ class Configuration:
         api_key: str = ""
 
     class LabelModelSettings:
-        model_name: str = 'sentence-transformers/all-MiniLM-L6-v2'
-        api_type: APILabelClassifierType = APILabelClassifierType.OPENAI_COMPATABLE
+        model_name: str = 'google/gemma-3-1b-it'
+        api_type: APILabelClassifierType = APILabelClassifierType.TRANSFORMERS
         api_base_url: str = ""
         api_key: str = ""
