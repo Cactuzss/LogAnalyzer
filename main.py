@@ -13,6 +13,15 @@ from modules.api import get_failed_builds
 from modules import Embedder, LabelClassifier
 from modules import Configuration, AvailableArchitectures, APILabelClassifierType, APIEmbeddingType 
 from modules import parser as Parser
+from modules import Preprocessor
+
+def generate_cluster(labels, texts, links):
+    res: dict[int, list[str]] = {}
+    for i, label in enumerate(labels):
+        if label not in res:
+            res[label] = []
+        res[label].append((texts[i], links[i]))
+    return res
 
 async def main():
 
@@ -20,21 +29,36 @@ async def main():
 
     # LOG URLS
     failed_builds = [el.url for el in failed_builds]
-    
+
     files = await Parser.get_log_by_links_array(failed_builds)
     print(f"Got {len(files)} logs")
-    
+
     embedder = Embedder(
         Configuration.EmbeddingSettings.model_name,
         Configuration.EmbeddingSettings.api_type,
         Configuration.EmbeddingSettings.api_base_url,
         Configuration.EmbeddingSettings.api_key
     )
-
+    
     embeddings = embedder.create_embedding(failed_builds)
     labels = embedder.generate_labels(embeddings)
+    
+    clusters = generate_cluster(labels, files, failed_builds)
+    for k in clusters:
+        clusters[k] = clusters[k][:3]
 
-    print(labels)
+    labelClassifier = LabelClassifier(
+        Configuration.LabelModelSettings.model_name,
+        Configuration.LabelModelSettings.api_type,
+        Configuration.LabelModelSettings.api_base_url,
+        Configuration.LabelModelSettings.api_key
+    )
+
+
+    # Get files by labels
+       
+
+
     return 
 
        
