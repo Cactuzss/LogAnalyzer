@@ -14,7 +14,7 @@ ERROR_LINE_RE = re.compile(
 
 class Preprocessor:
     @staticmethod
-    def extract_failure_info(log_lines: list[str], build_target: str | None, build_stage: str | None):
+    def extract_failure_info(log_lines: list[str]):
         error_snippet_lines = []
         full_log_text = "\n".join(log_lines)
 
@@ -36,8 +36,6 @@ class Preprocessor:
                 error_snippet_lines = log_lines[-50:]
 
         return {
-            "target_platform": build_target,
-            "build_stage": build_stage,
             "error_snippet": "\n".join(error_snippet_lines).strip(),
             "full_log": full_log_text.strip()
         }
@@ -59,7 +57,7 @@ class Preprocessor:
                 if in_build_block:
                     if failure_detected_in_block:
                         failure_info = Preprocessor.extract_failure_info(
-                            current_build_lines, current_target, current_stage)
+                            current_build_lines)
                         failures.append(failure_info)
 
                 in_build_block = True
@@ -81,7 +79,7 @@ class Preprocessor:
 
         if in_build_block and failure_detected_in_block:
             failure_info = Preprocessor.extract_failure_info(
-                current_build_lines, current_target, current_stage)
+                current_build_lines)
             failures.append(failure_info)
 
         return failures

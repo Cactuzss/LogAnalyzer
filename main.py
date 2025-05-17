@@ -49,8 +49,6 @@ async def main():
     labels = embedder.generate_labels(embeddings)
     
     clusters = generate_cluster(labels, files)
-    for k in clusters:
-        clusters[k] = clusters[k][:3]
 
     # Display clusters
     print()

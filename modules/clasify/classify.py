@@ -7,10 +7,11 @@ from sklearn.decomposition import PCA
 
 import matplotlib.pyplot as plt
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 import numpy as np
 from PIL import Image
+import json
 
 
 PCA_COMPONENTS = 50
@@ -109,8 +110,16 @@ class Embedder:
 
 
 class Response(BaseModel):
-    text: str
+     error_type: str  = Field(description="type of errors")
+     error_explanation:str = Field(description="short explanation of this errors (no more than 3 sentences)")
+     error_solution:str = Field(description= "potential solution (also no more than 3 sentences)")
 
+SYSTEM_PROMPT = f"""
+Analyze this log fragment with similar errors and make JSON schema. 
+Don't write anything but JSON schema this format:
+{Response.model_json_schema()}
+WRITE ONLY VALID JSON! USE SCHEMA! WRITE SHORT SOLUTIONS AND EXPLANATIONS! DO NOT WRITE IN MARKDOWN! PLAIN TEXT WITHOUT ANY '```json' OR ANYTHING!.
+"""
 
 class LabelClassifier:
     def __init__(
@@ -136,7 +145,7 @@ class LabelClassifier:
             case APILabelClassifierType.TRANSFORMERS:
                 try:
                     from transformers import utils
-                    from transformers import pipeline
+                    from transformers.pipelines import pipeline
                     utils.logging.set_verbosity_error()
                 except:
                     raise ImportError("Failed to import transformers! Install transformers to inference localy")
@@ -144,14 +153,19 @@ class LabelClassifier:
                 import torch
                 self.device = 'cpu' if not torch.cuda.is_available() else 'cuda'
 
-                self.pipe = pipeline("text-generation", model=self.model_name, device=self.device, torch_dtype=torch.bfloat16)
+                self.pipe = pipeline(
+                    "text-generation", 
+                    model=self.model_name, 
+                    device=self.device, 
+                    torch_dtype=torch.bfloat16
+                )
                 
             case _:
                 raise ValueError("Unknown API")
 
     def generate_log_description(self, text: str, label: int) -> str:
         messages = [
-            {"role": "system", "content": "Extract information from log file according to JSON schema."},
+            {"role": "system", "content": SYSTEM_PROMPT},
             {
                 "role": "user",
                 "content": f"```\n{text}\n```",
@@ -168,7 +182,16 @@ class LabelClassifier:
                 
 
             case APILabelClassifierType.TRANSFORMERS:
-                result = self.pipe(messages)
+                result = self.pipe(
+                    messages,
+                    max_length=None,
+                    max_new_tokens=512
+                )
+                data = result[-1][-1]["generated_text"][-1]['content']
+                print(data)
+                result = Response.model_validate_json(data)
 
             case _:
                 raise ValueError("Unknown API")
+
+        return result

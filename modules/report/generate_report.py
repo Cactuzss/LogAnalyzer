@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 
 
-def generate_report(clusters_data: dict, failures_data: dict, clustered_failures, template_path: str = "./templates", template_filename: str = "report.html"):
+def generate_report(clusters_data: dict, failures_data: dict, clustered_failures, template_path: str = "./modules/report", template_filename: str = "report.html"):
     env = Environment(loader=FileSystemLoader(template_path))
     template = env.get_template(template_filename)
     
@@ -14,4 +14,3 @@ def generate_report(clusters_data: dict, failures_data: dict, clustered_failures
     with open('./report.html', 'w', encoding='utf-8') as f:
         f.write(html_output)
 
-generate_report({}, {})
