@@ -1,5 +1,6 @@
 import regex, asyncio
 from modules import CachingJSON, LabelClassifier
+from modules import Preprocessor
 
 
 jc = CachingJSON()
@@ -37,6 +38,15 @@ def collect_data(data:list[dict], cluster_id:int,  classifier:LabelClassifier):
         # asyncio.run(jc.putting('temp', "claster", temp_obj))
 
         # request to lrm
+        preprocessed = []
+        for el in data:
+            preprocessed = Preprocessor.extract_failure_info(data["data"])
+
+            # "target_platform": build_target,
+            # "build_stage": build_stage,
+            # "error_snippet": "\n".join(error_snippet_lines).strip(),
+            # "full_log": full_log_text.strip()
+
         generate_data = classifier.generate_log_description(data, cluster_id)
         """
         {
