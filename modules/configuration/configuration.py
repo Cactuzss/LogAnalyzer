@@ -15,3 +15,4 @@ class Configuration:
     class ModelTypes(Enum):
         local = "local"
         remote = "remote"
+

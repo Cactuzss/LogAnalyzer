@@ -7,13 +7,19 @@ import platform
 import time
 
 import regex as re
+
 from modules import Configuration, CachingJSON
+from modules.api import get_failed_builds
 from test_links import TEST_LINKS
 
 # Где вызывается main()?
 # В функции после декораторов @click
 
 async def main():
+
+    failed_builds = get_failed_builds(Configuration.branch, Configuration.architecture.value)
+    print(len(failed_builds))
+
     test_obj1 ={
         "name" : "test_name1",
         "error_message": "test_error_message",
@@ -68,7 +74,7 @@ def is_endpoint_valid(address: str) -> bool:
               help="Required if model type is remote. Sets ollama api endpoint")
 @click.option("--verbose", "-v", is_flag=True, 
               help="Set to true to more logs")
-@click.option("--output", "-o", type=click.Path(writable=True, dir_okay=False), 
+@click.option("--output", "-o", type=click.Path(writable=True, dir_okay=False), default="./log-analyzer-out.txt",
               help="Output file")
 def startup(arch, branch, model_type, ollama_address, verbose, output):
     Configuration.architecture = arch

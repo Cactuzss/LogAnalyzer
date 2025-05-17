@@ -1,6 +1,8 @@
 import requests
 import json
 
+from modules import Configuration
+
 BASE_API: str = "https://rdb.altlinux.org/api/"
 
 class Ftbfs:
@@ -16,12 +18,11 @@ class Ftbfs:
         self.ftbfs_since = json["ftbfs_since"]
         self.url = json["url"]
 
-# sdjfksalfjlskadfsjlkdj
-def get_ftbfs(repo: str) -> list[Ftbfs]:
-    res = requests.get(BASE_API + "/export/beehive/ftbfs?branch=" + repo)
+def get_ftbfs(repo: str, arch: str) -> list[Ftbfs]:
+    res = requests.get(BASE_API + "/export/beehive/ftbfs?branch=" + repo + "&arch=" + arch)
+    if (res.status_code != 200):
+        print(f"[ERROR]: Failed ftbfs request. {res.text}")
+        exit(1)
+
     resobj = json.loads(res.content)
     return [Ftbfs(el) for el in resobj["ftbfs"]]
-
-def get_log(url: str) -> str:
-    res = requests.get(url)
-    return res.content.decode("utf-8")
