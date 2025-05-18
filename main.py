@@ -34,8 +34,17 @@ async def main():
 
     # LOG URLS
     failed_builds = [el.url for el in failed_builds]
-
     files = await Parser.get_log_by_links_array(failed_builds)
+
+    new_files = []
+    new_links = []
+
+    for i, file in enumerate(files):
+        if file is not None:
+            if file["data"] is not None:
+                new_files.append(file)
+                new_links.append(failed_builds[i])
+
     #print(f"Got {len(files)} logs")
 
     embedder = Embedder(
@@ -45,10 +54,10 @@ async def main():
         Configuration.EmbeddingSettings.api_key
     )
     
-    embeddings = embedder.create_embedding(failed_builds)
+    embeddings = embedder.create_embedding(new_files)
     labels = embedder.generate_labels(embeddings)
     
-    clusters = generate_cluster(labels, files)
+    clusters = generate_cluster(labels, new_files)
 
     # Display clusters
     print()
