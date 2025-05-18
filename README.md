@@ -54,9 +54,9 @@ python main.py --embedding_model_type SENTENCE_TRANSFORMERS --label_model_type T
 | Parameter          | Description                              | Default            |
 |--------------------|------------------------------------------|--------------------|
 | `--arch`, `-a`     | Architecture (x86_64/i586)               | Auto-detected      |
-| `--branch`, `-b`   | Branch to analyze                        | `main`             |
+| `--branch`, `-b`   | Branch to analyze                        | `sisyphus`         |
 | `--verbose`, `-v`  | Enable verbose logging                   | `False`            |
-| `--output`, `-o`   | Output path for results                  | `sisyphus`         |
+| `--output`, `-o`   | Output path for results                  | `./log-out.txt`    |
 
 ### Model Settings
 #### For Embeddings:
